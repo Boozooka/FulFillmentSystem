@@ -14,6 +14,7 @@ import system.fullfillment.interfaces.controllers.ProductEntryControllerInterfac
 import system.fullfillment.models.ProductEntry;
 import system.fullfillment.mvc.services.ProductEntryService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,6 +23,20 @@ public class ProductEntryController implements ProductEntryControllerInterface {
 
     @Autowired
     ProductEntryService service;
+
+    @Override
+    public ResponseEntity<?> getById(Long id) {
+        if (id == null){
+            throwInvalidRequestEx("Id must not be null");
+        }
+
+        ProductEntry entry = service.getProductEntryById(id);
+        List<ProductEntry> result = new ArrayList<>();
+        result.add(entry);
+
+        ProductEntryListResponse responseBody = new ProductEntryListResponse(result);
+        return ResponseEntity.ok(responseBody);
+    }
 
     @Override
     @PostMapping("/addNewProductEntry")
@@ -39,14 +54,14 @@ public class ProductEntryController implements ProductEntryControllerInterface {
             throwInvalidRequestEx("Value must be more than 0");
         }
 
-        service.addNewProductEntry(request.getProductId(), request.getStatus(), request.getFc(),
+        service.addNewProductEntry(request.getProductId(), request.getStatus().toLowerCase(), request.getFc(),
                 request.getQty(), request.getValue());
         return ResponseEntity.ok("Product entry successfully added");
     }
 
     @Override
     @PostMapping("/delete")
-    public ResponseEntity<?> deleteProductEntryById(DeleteProductEntryByIdRequest request) {
+    public ResponseEntity<?> deleteProductEntryById(@RequestBody DeleteProductEntryByIdRequest request) {
         if (request.getDeletingId() <= 0){
             throwInvalidRequestEx("Invalid id");
         }
@@ -58,7 +73,7 @@ public class ProductEntryController implements ProductEntryControllerInterface {
 
     @Override
     @PostMapping("/update")
-    public ResponseEntity<?> updateProductByColumnName(UpdateProductEntryRequest request) {
+    public ResponseEntity<?> updateProductByColumnName(@RequestBody UpdateProductEntryRequest request) {
 
         if (request.getId() == null) {
             throwInvalidRequestEx("Id must not be null");
@@ -77,7 +92,7 @@ public class ProductEntryController implements ProductEntryControllerInterface {
 
     @Override
     @GetMapping("/getAllWithProductId")
-    public ResponseEntity<?> getAllByProductId(@RequestParam(name = "productID") String productId) {
+    public ResponseEntity<?> getAllByProductId(@RequestParam(name = "productId") String productId) {
         if (productId == null){
             throwInvalidRequestEx("Product id must not be null");
         }
@@ -95,7 +110,7 @@ public class ProductEntryController implements ProductEntryControllerInterface {
             throwInvalidRequestEx("Status must not be null");
         }
 
-        List<ProductEntry> result = service.getAllByProductId(status);
+        List<ProductEntry> result = service.getAllByProductId(status.toLowerCase());
 
         ProductEntryListResponse response = new ProductEntryListResponse(result);
         return ResponseEntity.ok(response);

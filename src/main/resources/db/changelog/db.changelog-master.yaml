@@ -1,3 +1,6 @@
 databaseChangeLog:
   - include:
       file: db/changelog/changesets/changesetStart.sql
+
+  - include:
+      file: db/changelog/changesets/changesetAddValue.sql

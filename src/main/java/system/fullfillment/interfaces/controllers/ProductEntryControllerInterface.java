@@ -14,4 +14,5 @@ public interface ProductEntryControllerInterface {
     ResponseEntity<?> getAllByFulfillmentCenter(String fulfillmentCenter);
     ResponseEntity<?> totalSellableValue();
     ResponseEntity<?> getAllValueForFulfillmentCenter(String fulfillmentCenter);
+    ResponseEntity<?> getById(Long id);
 }

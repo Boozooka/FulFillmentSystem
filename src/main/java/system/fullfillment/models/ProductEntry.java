@@ -24,7 +24,7 @@ public class ProductEntry {
     @Column(name = "status")
     private String status;
 
-    @Column(name = "fulfillmentCenter")
+    @Column(name = "fulfillmentcenter")
     private String fulfillmentCenter;
 
     @Column(name = "qty")
