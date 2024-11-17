@@ -1,0 +1,341 @@
+openapi: 3.0.0
+info:
+  title: Система выполнения задач, API спецификация
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/products/
+paths:
+  /getById/{id}:
+    get:
+      summary: Найти сущность продукта по его id
+      tags:
+        - Product
+      operationId: getProductById
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: Возвращается json сущности
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        '400':
+          description: Неправильный ввод данных
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+        '404':
+          description: Не найдена данная запись
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+
+  /addNewProductEntry:
+    post:
+      summary: Добавить новую запись о продукте
+      operationId: addNewProductEntry
+      tags:
+        - Product
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewProductEntryRequest"
+
+      responses:
+        '200':
+          description: Уведомление о успешном добавлении
+        '400':
+          description: Неправильный ввод данных
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+
+  /delete:
+    post:
+      summary: Удаление записи о продукте по её id
+      operationId: deleteProductEntryById
+      tags:
+        - Product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteProductEntryByIdRequest"
+      responses:
+        '200':
+          description: Уведомление о успешном удалении сущности
+        '400':
+          description: Неправильный ввод данных
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+        '404':
+          description: Не найдена данная запись
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+
+  /update:
+    post:
+      summary: Обносление записи о продукте
+      operationId: updateProductByColumnName
+      tags:
+        - Product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProductEntryRequest"
+      responses:
+        '200':
+          description: Уведомление о успешном обновлении сущности
+        '400':
+          description: Неправильный ввод данных
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+        '404':
+          description: Не найдена данная запись
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+
+  /getAllWithProductId/{productId}:
+    get:
+      summary: Найти все записи одинаковых продуктов
+      tags:
+        - Product
+      operationId: getAllByProductId
+
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Возвращается список нужных продуктов в форме строкового текста
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductEntryListResponce"
+        '400':
+          description: Неправильный ввод данных
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+
+  /getAllWithStatus/{status}:
+    get:
+      summary: Найти все записи продуктов в одном сотоянии
+      tags:
+        - Product
+      operationId: getAllByStatus
+
+      parameters:
+        - name: status
+          in: path
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Возвращается список нужных продуктов в форме строкового текста
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductEntryListResponce"
+        '400':
+          description: Неправильный ввод данных
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+  /getAllInCenter/{fc}:
+    get:
+      summary: Найти все записи продуктов в одном центре выполнения
+      tags:
+        - Product
+      operationId: getAllByFulfillmentCenter
+
+      parameters:
+        - name: fc
+          in: path
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Возвращается список нужных продуктов в форме строкового текста
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductEntryListResponce"
+        '400':
+          description: Неправильный ввод данных
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exception"
+  /getTotalSellableValue:
+    get:
+      summary: Получить общую стоимость всех продуктов с состоянием sellable
+      tags:
+        - Product
+      operationId: totalSellableValue
+
+      responses:
+        '200':
+          description: Возвращается integer значение - общая стоимость всех Sellable продуктов
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IntegerValueResponse"
+  /getTotalValueInCenter/{fc}:
+    get:
+      summary: Получить общую стоимость всех продуктов с состоянием
+      tags:
+        - Product
+      operationId: getAllValueForFulfillmentCenter
+
+      parameters:
+        - name: fc
+          in: path
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Возвращается integer значение - общая стоимость всех продуктов в указанном центре
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IntegerValueResponse"
+components:
+  schemas:
+    Product:
+      type: object
+      required:
+        - productId
+        - status
+        - fc
+        - quantity
+      properties:
+        id:
+          type: integer
+          description: Идентификатор записи о продукте
+        productId:
+          type: string
+          description: Строка-идентификатор продукта
+        status:
+          type: string
+          description: Состояние продукта
+        fc:
+          type: string
+          description: Название(номер) центра исполнения (Fulfillment Center)
+        quantity:
+          type: integer
+          description: Количество продукта в этом центре
+        value:
+          type: integer
+          description: Стоимость единицы продукта
+    Exception:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+    DeleteProductEntryByIdRequest:
+      type: object
+      required:
+        - deletingId
+      properties:
+        deletingId:
+          type: integer
+    NewProductEntryRequest:
+      type: object
+      required:
+        - productId
+        - status
+        - fc
+        - quantity
+      properties:
+        id:
+          type: integer
+          description: Идентификатор записи о продукте
+        productId:
+          type: string
+          description: Строка-идентификатор продукта
+        status:
+          type: string
+          description: Состояние продукта
+        fc:
+          type: string
+          description: Название(номер) центра исполнения (Fulfillment Center)
+        quantity:
+          type: integer
+          description: Количество продукта в этом центре
+        value:
+          type: integer
+          description: Стоимость единицы продукта
+    UpdateProductEntryRequest:
+      type: object
+      required:
+        - id
+        - updatingColumn
+        - newValue
+      properties:
+        id:
+          type: integer
+          description: Идентификатор изменяемой записи
+        updatingColumn:
+          type: string
+          description: Поле, которое нужно изменить (status, fc, qty, val)
+        newValue:
+          type: string
+          description: Значение, которое должно оказаться на месте updatingColumn
+    ProductEntryListResponce:
+      type: object
+      required:
+        - body
+      properties:
+        body:
+          type: string
+          description: Список продуктов в форме строкового текста
+    IntegerValueResponse:
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          type: integer
+          description: Число, которое нужно вернуть

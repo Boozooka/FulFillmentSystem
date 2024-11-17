@@ -2,7 +2,6 @@ package system.fullfillment.mvc.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import system.fullfillment.dto.requests.DeleteProductEntryByIdRequest;
 import system.fullfillment.dto.requests.NewProductEntryRequest;
@@ -25,8 +24,9 @@ public class ProductEntryController implements ProductEntryControllerInterface {
     ProductEntryService service;
 
     @Override
-    public ResponseEntity<?> getById(Long id) {
-        if (id == null){
+    @GetMapping("/getById")
+    public ResponseEntity<?> getById(@RequestParam(name = "id") Long id) {
+        if (id == null) {
             throwInvalidRequestEx("Id must not be null");
         }
 
@@ -41,16 +41,16 @@ public class ProductEntryController implements ProductEntryControllerInterface {
     @Override
     @PostMapping("/addNewProductEntry")
     public ResponseEntity<?> addNewProductEntry(@RequestBody NewProductEntryRequest request) {
-        if (request.getProductId() == null){
+        if (request.getProductId() == null) {
             throwInvalidRequestEx("Product id must not be null");
         }
-        if (request.getStatus() == null){
+        if (request.getStatus() == null) {
             throwInvalidRequestEx("Status must not be null");
         }
-        if (request.getFc() == null){
+        if (request.getFc() == null) {
             throwInvalidRequestEx("Fulfillment center ('fc' column) must not be null");
         }
-        if (request.getValue() <= 0){
+        if (request.getValue() <= 0) {
             throwInvalidRequestEx("Value must be more than 0");
         }
 
@@ -62,7 +62,7 @@ public class ProductEntryController implements ProductEntryControllerInterface {
     @Override
     @PostMapping("/delete")
     public ResponseEntity<?> deleteProductEntryById(@RequestBody DeleteProductEntryByIdRequest request) {
-        if (request.getDeletingId() == null || request.getDeletingId() <= 0){
+        if (request.getDeletingId() == null || request.getDeletingId() <= 0) {
             throwInvalidRequestEx("Invalid id");
         }
 
@@ -78,10 +78,10 @@ public class ProductEntryController implements ProductEntryControllerInterface {
         if (request.getId() == null) {
             throwInvalidRequestEx("Id must not be null");
         }
-        if (request.getUpdatingColumn() == null){
+        if (request.getUpdatingColumn() == null) {
             throwInvalidRequestEx("Updating column must not be null");
         }
-        if (request.getNewValue() == null){
+        if (request.getNewValue() == null) {
             throwInvalidRequestEx("New value must not be null");
         }
 
@@ -93,7 +93,7 @@ public class ProductEntryController implements ProductEntryControllerInterface {
     @Override
     @GetMapping("/getAllWithProductId")
     public ResponseEntity<?> getAllByProductId(@RequestParam(name = "productId") String productId) {
-        if (productId == null){
+        if (productId == null) {
             throwInvalidRequestEx("Product id must not be null");
         }
 
@@ -106,7 +106,7 @@ public class ProductEntryController implements ProductEntryControllerInterface {
     @Override
     @GetMapping("/getAllWithStatus")
     public ResponseEntity<?> getAllByProductStatus(@RequestParam(name = "status") String status) {
-        if (status == null){
+        if (status == null) {
             throwInvalidRequestEx("Status must not be null");
         }
 
@@ -119,7 +119,7 @@ public class ProductEntryController implements ProductEntryControllerInterface {
     @Override
     @GetMapping("/getAllInCenter")
     public ResponseEntity<?> getAllByFulfillmentCenter(@RequestParam(name = "fc") String fulfillmentCenter) {
-        if (fulfillmentCenter == null){
+        if (fulfillmentCenter == null) {
             throwInvalidRequestEx("Fulfillment center ('fc') must not be null");
         }
 
@@ -139,7 +139,7 @@ public class ProductEntryController implements ProductEntryControllerInterface {
     @Override
     @GetMapping("/getTotalValueInCenter")
     public ResponseEntity<?> getAllValueForFulfillmentCenter(@RequestParam(name = "fc") String fulfillmentCenter) {
-        if (fulfillmentCenter == null){
+        if (fulfillmentCenter == null) {
             throwInvalidRequestEx("Fulfillment center ('fc') must not be null");
         }
 
@@ -147,7 +147,7 @@ public class ProductEntryController implements ProductEntryControllerInterface {
         return ResponseEntity.ok(responseBody);
     }
 
-    private void throwInvalidRequestEx(String message){
+    private void throwInvalidRequestEx(String message) {
         throw new InvalidRequestException(message);
     }
 }
