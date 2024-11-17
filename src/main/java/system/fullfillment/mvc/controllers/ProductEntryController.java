@@ -62,7 +62,7 @@ public class ProductEntryController implements ProductEntryControllerInterface {
     @Override
     @PostMapping("/delete")
     public ResponseEntity<?> deleteProductEntryById(@RequestBody DeleteProductEntryByIdRequest request) {
-        if (request.getDeletingId() <= 0){
+        if (request.getDeletingId() == null || request.getDeletingId() <= 0){
             throwInvalidRequestEx("Invalid id");
         }
 
@@ -99,8 +99,8 @@ public class ProductEntryController implements ProductEntryControllerInterface {
 
         List<ProductEntry> result = service.getAllByProductId(productId);
 
-        ProductEntryListResponse response = new ProductEntryListResponse(result);
-        return ResponseEntity.ok(response);
+        ProductEntryListResponse responseBody = new ProductEntryListResponse(result);
+        return ResponseEntity.ok(responseBody);
     }
 
     @Override
@@ -110,10 +110,10 @@ public class ProductEntryController implements ProductEntryControllerInterface {
             throwInvalidRequestEx("Status must not be null");
         }
 
-        List<ProductEntry> result = service.getAllByProductId(status.toLowerCase());
+        List<ProductEntry> result = service.getAllByProductStatus(status.toLowerCase());
 
-        ProductEntryListResponse response = new ProductEntryListResponse(result);
-        return ResponseEntity.ok(response);
+        ProductEntryListResponse responseBody = new ProductEntryListResponse(result);
+        return ResponseEntity.ok(responseBody);
     }
 
     @Override
@@ -123,10 +123,10 @@ public class ProductEntryController implements ProductEntryControllerInterface {
             throwInvalidRequestEx("Fulfillment center ('fc') must not be null");
         }
 
-        List<ProductEntry> result = service.getAllByProductId(fulfillmentCenter);
+        List<ProductEntry> result = service.getAllByFulfillmentCenter(fulfillmentCenter);
 
-        ProductEntryListResponse response = new ProductEntryListResponse(result);
-        return ResponseEntity.ok(response);
+        ProductEntryListResponse responseBody = new ProductEntryListResponse(result);
+        return ResponseEntity.ok(responseBody);
     }
 
     @Override
